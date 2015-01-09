@@ -1,12 +1,21 @@
-
 (defvar tabulated-list-format)
 (defvar tabulated-list-entries)
 (defvar tabulated-list-sort-key)
 
 ;(declare-function tabulated-list-init-header  "tabulated-list" ())
 
+(defvar dockercontrol-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "r") 'docker-list)
+    (define-key map (kbd "P") 'docker-pause)
+    (define-key map (kbd "U") 'docker-unpause)
+    map)
+  "Keymap for dockercontrol-mode")
+
+
 (define-derived-mode dockercontrol-mode tabulated-list-mode "Docker"
   "Mode for dockercontrol"
+  (use-local-map dockercontrol-mode-map)
   (setq tabulated-list-format
         [("Name" 30 t)
          ("Status" 15 t)
@@ -17,11 +26,6 @@
   (setq tabulated-list-padding 1)
   (tabulated-list-init-header))
 
-(defvar dockercontrol-mode-map
-  (let ((map make-keymap))
-    (define-key map (kbd "r") 'docker-list)
-    (define-key map (kbd "p") 'docker-pause)
-    map))
 
 (defun docker (&optional buffer)
   "Run dockercontrol-mode"
@@ -34,10 +38,19 @@
   (display-buffer buffer)
   nil)
 
-(defun docker-pause (line)
+(defun docker-pause ()
   "pause container"
-  (message "Got line %s" line)
-  (eval (shell-command-to-string)))
+  (interactive)
+  (let* ((container (tabulated-list-get-id)))
+    (start-process "docker-pause" nil "docker" "pause" container))
+  (docker-list))
+
+(defun docker-unpause ()
+  "pause container"
+  (interactive)
+  (let* ((container (tabulated-list-get-id)))
+    (start-process "docker-unpause" nil "docker" "unpause" container))
+  (docker-list))
 
 (defun docker-list ()
   "Get docker processes list"
