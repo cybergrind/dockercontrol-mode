@@ -4,14 +4,21 @@
 
 ;(declare-function tabulated-list-init-header  "tabulated-list" ())
 
-(defvar dockercontrol-mode-map
+(defun docker-get-map ()
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "r") 'docker-list)
     (define-key map (kbd "P") 'docker-pause)
     (define-key map (kbd "U") 'docker-unpause)
-    map)
+    map))
+
+(defvar dockercontrol-mode-map
+  (docker-get-map)
   "Keymap for dockercontrol-mode")
 
+(defun docker-update-map ()
+  (interactive)
+  (setq dockercontrol-mode-map (docker-get-map))
+  (use-local-map dockercontrol-mode-map))
 
 (define-derived-mode dockercontrol-mode tabulated-list-mode "Docker"
   "Mode for dockercontrol"
@@ -25,7 +32,6 @@
   (setq truncate-lines nil)
   (setq tabulated-list-padding 1)
   (tabulated-list-init-header))
-
 
 (defun docker (&optional buffer)
   "Run dockercontrol-mode"
