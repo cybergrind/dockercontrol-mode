@@ -9,6 +9,8 @@
     (define-key map (kbd "r") 'docker-list)
     (define-key map (kbd "P") 'docker-pause)
     (define-key map (kbd "U") 'docker-unpause)
+    (define-key map (kbd "s") 'docker-start)
+    (define-key map (kbd "S") 'docker-stop)
     map))
 
 (defvar dockercontrol-mode-map
@@ -56,6 +58,18 @@
   (interactive)
   (let* ((container (tabulated-list-get-id)))
     (start-process "docker-unpause" nil "docker" "unpause" container))
+  (docker-list))
+
+(defun docker-start ()
+  (interactive)
+  (let* ((container (tabulated-list-get-id)))
+    (start-process "docker-start" "msgs" "docker" "start" container))
+  (docker-list))
+
+(defun docker-stop ()
+  (interactive)
+  (let* ((container (tabulated-list-get-id)))
+    (start-process "docker-stop" nil "docker" "stop" container))
   (docker-list))
 
 (defun docker-list ()
