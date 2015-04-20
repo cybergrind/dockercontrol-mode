@@ -24,6 +24,13 @@
   (setq dockercontrol-mode-map (docker-get-map))
   (use-local-map dockercontrol-mode-map))
 
+(defvar docker-control-positions
+  (let ((ht (make-hash-table :test 'equal)))
+    (puthash 'name 0 ht)
+    (puthash 'status 1 ht)
+    (puthash 'image 2 ht)
+    ht))
+
 (define-derived-mode dockercontrol-mode tabulated-list-mode "Docker"
   "Mode for dockercontrol"
   (use-local-map dockercontrol-mode-map)
@@ -89,9 +96,12 @@
 
 (defun docker-exec ()
   (interactive)
-  (let* ((container (tabulated-list-get-id)))
-    (start-process "docker-exec" nil
-                   "screen" "-t" container
+  (let* ((container (tabulated-list-get-id))
+         (entry (tabulated-list-get-entry))
+         (name-pos (gethash 'name docker-control-positions))
+         (name (elt entry name-pos)))
+    (start-process "docker-exec" "*exec*"
+                   "screen" "-t" name
                    "docker" "exec" "-it"
                    container "/bin/bash")))
 

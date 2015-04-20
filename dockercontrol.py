@@ -6,7 +6,7 @@ cs = cli.containers(all=True)
 print '(',
 for c in cs:
     if len(c['Names']) > 1:
-        c['Names'] = filter(lambda x: len(x.split('/'))==2, c['Names'])
+        c['Names'] = filter(lambda x: len(x.split('/')) == 2, c['Names'])
     s = c['Status']
     if s.endswith('Paused)'):
         c['Status'] = 'Paused'
