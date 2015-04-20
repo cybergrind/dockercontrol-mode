@@ -12,6 +12,7 @@
     (define-key map (kbd "s") 'docker-start)
     (define-key map (kbd "S") 'docker-stop)
     (define-key map (kbd "R") 'docker-remove)
+    (define-key map (kbd "E") 'docker-exec)
     map))
 
 (defvar dockercontrol-mode-map
@@ -77,7 +78,7 @@
   "Get docker processes list"
   (interactive)
   (setq tabulated-list-entries
-        (car (read-from-string (shell-command-to-string "python2 ~/.emacs.d/dockercontrol-mode/dockercontrol.py"))))
+        (car (read-from-string (shell-command-to-string "python2 ~/.emacs.d/el-get/dockercontrol-mode/dockercontrol.py"))))
   (tabulated-list-print))
 
 (defun docker-remove ()
@@ -85,6 +86,14 @@
   (let ((container (tabulated-list-get-id)))
     (start-process "docker-rm" nil "docker" "rm" container))
   (tabulated-list-print))
+
+(defun docker-exec ()
+  (interactive)
+  (let* ((container (tabulated-list-get-id)))
+    (start-process "docker-exec" nil
+                   "screen" "-t" container
+                   "docker" "exec" "-it"
+                   container "/bin/bash")))
 
 (prin1-to-string '(list '("asdf" ["one" "two"])))
 
