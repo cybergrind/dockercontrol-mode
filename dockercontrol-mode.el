@@ -82,7 +82,7 @@
   (interactive)
   (let* ((container (tabulated-list-get-id)))
     (start-process "docker-stop" nil "docker" "stop" container))
-  (docker-list))
+  (run-at-time "1 sec" nil #'docker-list))
 
 (defun docker-list (&rest ignore)
   "Get docker processes list"
@@ -95,7 +95,7 @@
   (interactive)
   (let ((container (tabulated-list-get-id)))
     (start-process "docker-rm" nil "docker" "rm" container))
-  (tabulated-list-print))
+  (docker-list))
 
 (defun docker-exec ()
   (interactive)
