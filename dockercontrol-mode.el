@@ -9,7 +9,6 @@
 
 (defun docker-get-map ()
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "r") 'docker-list)
     (define-key map (kbd "P") 'docker-pause)
     (define-key map (kbd "U") 'docker-unpause)
     (define-key map (kbd "s") 'docker-start)
@@ -43,6 +42,7 @@
          ("Image" 15 t)])
   (setq tabulated-list-sort-key (cons "Status" nil))
   (add-hook 'tabulated-list-revert-hook 'list-processes--refresh nil t)
+  (set (make-local-variable 'revert-buffer-function) #'docker-list)
   (setq truncate-lines nil)
   (setq tabulated-list-padding 1)
   (tabulated-list-init-header))
@@ -84,7 +84,7 @@
     (start-process "docker-stop" nil "docker" "stop" container))
   (docker-list))
 
-(defun docker-list ()
+(defun docker-list (&rest ignore)
   "Get docker processes list"
   (interactive)
   (setq tabulated-list-entries
