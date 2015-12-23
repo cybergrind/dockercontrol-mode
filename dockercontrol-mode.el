@@ -89,7 +89,7 @@
   (interactive)
   (setq tabulated-list-entries
         (car (read-from-string (shell-command-to-string "python2 ~/.emacs.d/el-get/dockercontrol-mode/dockercontrol.py"))))
-  (tabulated-list-print))
+  (tabulated-list-print t))
 
 (defun docker-remove ()
   (interactive)
